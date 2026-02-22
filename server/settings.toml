@@ -1,0 +1,45 @@
+[default]
+# ---- App metadata ----
+app_name = "Legal QA Server"
+version = "0.1.0"
+
+# ---- Runtime behavior ----
+debug = false
+api_prefix = "/api/v1"
+
+# ---- Server defaults (can be overridden per environment) ----
+host = "0.0.0.0"
+port = 8002
+
+# ---- Logging ----
+log_level = "INFO"
+
+# ---- LLM Configuration ----
+groq_api_key = ""
+groq_model = "mixtral-8x7b-32768"
+llm_temperature = 0.0
+
+# ---- Vector Database Configuration ----
+pinecone_api_key = ""
+pinecone_index = "legal-docs"
+retrieval_k = 4
+
+# ---- Embedding Model Configuration ----
+cohere_api_key = ""
+embedding_model = "embed-english-v3.0"
+
+# ---- Ingestion Configuration ----
+ingestion_batch_size = 32
+ingestion_chunk_size = 512
+
+# ---- Security / CORS (non-secret) ----
+allowed_hosts = ["localhost", "127.0.0.1"]
+cors_allow_origins = ["http://localhost:3000", "http://localhost:8000"]
+cors_allow_credentials = true
+cors_allow_methods = ["*"]
+cors_allow_headers = ["*"]
+
+[development]
+dynaconf_merge = true
+debug = true
+log_level = "DEBUG"
