@@ -5,6 +5,7 @@ __pycache__/
 .installed.cfg
 *.egg
 .venv/
+.vscode/
 
 # Environment & Secrets
 .env
