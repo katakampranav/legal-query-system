@@ -33,7 +33,7 @@ It supports two response modes:
 | **Frontend** | Next.js 16, React 19, TypeScript, TailwindCSS v4 |
 | **UI Components** | shadcn/ui (custom), Radix UI, Lucide React |
 | **Backend** | FastAPI, Python 3.12 |
-| **AI Orchestration** | LangGraph, LangChain |
+| **AI Orchestration** | LangGraph, LangChain, LlamaIndex |
 | **LLM** | Groq (llama-3.3-70b-versatile) |
 | **Embeddings** | Cohere (`embed-english-v3.0`) |
 | **Vector Store** | Pinecone |
