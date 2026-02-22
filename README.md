@@ -16,23 +16,9 @@ LegalQ is a full-stack AI application that helps users understand crimes, punish
 
 ---
 
-## 📋 Table of Contents
-
-- [Overview](#overview)
-- [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
-- [Prerequisites](#prerequisites)
-- [Setup — Backend (Server)](#setup--backend-server)
-- [Setup — Frontend (Client)](#setup--frontend-client)
-- [API Contract](#api-contract)
-- [Features](#features)
-- [Environment Variables](#environment-variables)
-
----
-
 ## Overview
 
-LegalQ uses a **RAG (Retrieval-Augmented Generation)** pipeline to answer legal questions grounded in the BNS. The system retrieves relevant legal text from a Pinecone vector store and feeds it to an LLM (Groq / Mixtral) via a LangGraph workflow to produce accurate, context-grounded responses.
+LegalQ uses a **RAG (Retrieval-Augmented Generation)** pipeline to answer legal questions grounded in the BNS. The system retrieves relevant legal text from a Pinecone vector store and feeds it to an LLM (LLama 3.3 70B versatile) via a LangGraph workflow to produce accurate, context-grounded responses.
 
 It supports two response modes:
 - **Normal Mode** — Plain language explanation for everyday citizens
@@ -46,58 +32,12 @@ It supports two response modes:
 |---|---|
 | **Frontend** | Next.js 16, React 19, TypeScript, TailwindCSS v4 |
 | **UI Components** | shadcn/ui (custom), Radix UI, Lucide React |
-| **Theming** | next-themes (Light / Dark / System) |
 | **Backend** | FastAPI, Python 3.12 |
 | **AI Orchestration** | LangGraph, LangChain |
-| **LLM** | Groq (Mixtral-8x7b-32768) |
+| **LLM** | Groq (llama-3.3-70b-versatile) |
 | **Embeddings** | Cohere (`embed-english-v3.0`) |
 | **Vector Store** | Pinecone |
 | **Package Manager** | npm (frontend), uv (backend) |
-
----
-
-## Project Structure
-
-```
-legalq/
-├── client/                     # Next.js frontend
-│   └── src/
-│       ├── app/
-│       │   ├── layout.tsx       # Root layout + ThemeProvider
-│       │   ├── page.tsx         # Landing page
-│       │   ├── globals.css      # Design system (light/dark CSS vars)
-│       │   └── chat/
-│       │       └── page.tsx     # Chat page
-│       ├── components/
-│       │   ├── ui/              # shadcn-style UI primitives
-│       │   └── common/          # Logo, Navbar, ThemeToggle
-│       ├── features/
-│       │   └── chat/
-│       │       ├── components/  # ChatWindow, MessageBubble, ChatInput, etc.
-│       │       ├── hooks/       # useChat (all state management)
-│       │       ├── services/    # legalq-api.ts (API calls)
-│       │       └── types/       # chat-types.ts
-│       └── lib/
-│           ├── http-client.ts   # fetch wrapper (timeout + error handling)
-│           ├── providers.tsx    # ThemeProvider
-│           └── utils.ts         # cn() utility
-│
-└── server/                     # FastAPI + LangGraph backend
-    ├── src/
-    │   ├── app/                 # FastAPI app factory
-    │   ├── endpoints/           # API route handlers
-    │   ├── graph/               # LangGraph workflow definition
-    │   ├── nodes/               # LangGraph nodes (retriever, generator, etc.)
-    │   ├── llm/                 # LLM client (Groq)
-    │   ├── services/            # Business logic
-    │   ├── models/              # Pydantic request/response models
-    │   └── state/               # LangGraph state schema
-    ├── ingestion/               # PDF ingestion pipeline (BNS document)
-    ├── settings.toml            # App configuration (dynaconf)
-    ├── requirements.txt         # Python dependencies
-    ├── run.sh                   # Linux/Mac startup script
-    └── run.bat                  # Windows startup script
-```
 
 ---
 
@@ -138,10 +78,11 @@ cp .env.example .env   # if available, otherwise create manually
 Your `.env` should contain:
 
 ```env
-GROQ_API_KEY=your_groq_api_key_here
-PINECONE_API_KEY=your_pinecone_api_key_here
-COHERE_API_KEY=your_cohere_api_key_here
-PINECONE_INDEX=legal-docs
+GROQ_API_KEY= YOUR_GROQ_API_KEY_HERE
+GROQ_MODEL=llama-3.3-70b-versatile
+PINECONE_API_KEY= YOUR_PINECONE_API_KEY_HERE
+PINECONE_INDEX= YOUR_PINECONE_INDEX_NAME_HERE
+COHERE_API_KEY= YOUR_COHERE_API_KEY_HERE
 ```
 
 ### 3. Install Python dependencies
@@ -232,65 +173,12 @@ npm run start
 
 ---
 
-## API Contract
-
-The frontend communicates with only **one endpoint**:
-
-### `POST /api/v1/ask`
-
-**Request:**
-```json
-{
-  "question": "What is the punishment for theft under BNS?",
-  "mode": "normal"
-}
-```
-
-| Field | Type | Values |
-|---|---|---|
-| `question` | `string` | Any legal question |
-| `mode` | `string` | `"normal"` or `"lawyer"` |
-
-**Response:**
-```json
-{
-  "answer": "Under Section 303 of the Bharatiya Nyaya Sanhita...",
-  "citations": ["Section 303", "Section 304"],
-  "mode": "normal",
-  "session_id": "abc123"
-}
-```
-
----
-
 ## Features
 
 - 🤖 **AI-Powered Q&A** — Answers grounded in the BNS via RAG pipeline
 - ⚖️ **Two Response Modes** — Normal (plain language) and Lawyer (structured legal analysis)
-- 🌗 **Dark / Light / System Theme** — Toggleable with warm terracotta palette
-- 📱 **Fully Responsive** — Works on mobile, tablet, and desktop
 - 📝 **Markdown Rendering** — AI responses render headers, bullet points, bold text
-- ⌨️ **Smart Input** — Enter to send, Shift+Enter for newline, auto-resizing textarea
 - 🔒 **Safe Refusals** — Declines questions unrelated to Indian criminal law
-
----
-
-## Environment Variables
-
-### Backend (`server/.env`)
-
-| Variable | Required | Description |
-|---|---|---|
-| `GROQ_API_KEY` | ✅ | Groq LLM API key |
-| `PINECONE_API_KEY` | ✅ | Pinecone vector DB key |
-| `COHERE_API_KEY` | ✅ | Cohere embeddings key |
-| `PINECONE_INDEX` | ✅ | Name of your Pinecone index |
-
-### Frontend (`client/.env.local`)
-
-| Variable | Required | Description |
-|---|---|---|
-| `NEXT_PUBLIC_API_URL` | ⬜ | Backend base URL (default: `http://localhost:8000`) |
 
 ---
 
@@ -313,10 +201,6 @@ npm run dev
 Then open **`http://localhost:3000`** in your browser. 🚀
 
 ---
-
-<div align="center">
-
-Made with ❤️ for accessible legal literacy in India
 
 > **Disclaimer:** LegalQ is for informational purposes only. Always consult a qualified lawyer for legal advice.
 

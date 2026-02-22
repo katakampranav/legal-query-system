@@ -16,12 +16,12 @@ log_level = "INFO"
 
 # ---- LLM Configuration ----
 groq_api_key = ""
-groq_model = "mixtral-8x7b-32768"
+groq_model = "llama-3.3-70b-versatile"
 llm_temperature = 0.0
 
 # ---- Vector Database Configuration ----
 pinecone_api_key = ""
-pinecone_index = "legal-docs"
+pinecone_index = "legalq-index"
 retrieval_k = 4
 
 # ---- Embedding Model Configuration ----
